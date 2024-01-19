@@ -17,7 +17,7 @@ describe('TODO repository', () => {
     repository = new todoRepository.TodoRepository() as jest.Mocked<todoRepository.TodoRepository>;
   });
 
-  it('should return the todo list', async () => {
+  it('should return the todo list from the repository', async () => {
     const expected = {
       todos: [
         {
