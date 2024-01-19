@@ -1,18 +1,14 @@
-jest.mock('../../src/repository/todo', () => ({
-  TodoRepository: jest.fn().mockImplementation(() => ({
-    getTodos: jest.fn(),
-    addTodo: jest.fn(),
-    deleteTodos: jest.fn(),
-    updateTodos: jest.fn(),
-  })),
-}));
+import { TodoService } from '../../src/service/todo';
+import { TodoRepository } from '../../src/repository/todo';
+import { mock } from 'jest-mock-extended';
 
-describe('TODO repository', () => {
-  let sut: jest.Mocked<todoService.TodoService>;
+describe('TodoService', () => {
+  let sut: TodoService;
+  let todoRepositoryMock = mock<TodoRepository>();
 
   beforeEach(() => {
     jest.clearAllMocks();
-    sut = new TodoService.TodoService() as jest.Mocked<todoService.TodoService>;
+    sut = new TodoService(todoRepositoryMock);
   });
 
   it('should return the todo list', async () => {
@@ -24,7 +20,7 @@ describe('TODO repository', () => {
         },
       ],
     };
-    (sut.getTodos as jest.Mock).mockResolvedValue(expected);
+    await todoRepositoryMock.getTodos.mockReturnValue(expected);
 
     const actual = await sut.getTodos();
     expect(actual).toEqual(expected);
@@ -49,7 +45,7 @@ describe('TODO repository', () => {
       task: 'This is another todo example',
     };
 
-    (sut.addTodo as jest.Mock).mockResolvedValue(expected);
+    await todoRepositoryMock.addTodo.mockReturnValue(expected);
 
     const actual = await sut.addTodo(item);
     expect(actual).toEqual(expected);
@@ -62,15 +58,15 @@ describe('TODO repository', () => {
       todos: [],
     };
 
-    (sut.deleteTodos as jest.Mock).mockResolvedValue(expected);
+    await todoRepositoryMock.deleteTodos.mockReturnValue(expected);
 
-    const actual = await sut.deleteTodos(id);
+    const actual = await sut.deleteTodo(id);
     expect(actual).toEqual(expected);
   });
 
   it('should update the todo list', async () => {
-
     const item = {
+      id: 1,
       task: 'This is an updated todo',
     };
     const id = 1;
@@ -80,50 +76,46 @@ describe('TODO repository', () => {
         {
           id: 1,
           task: 'This is an updated todo',
-        },
+        }
       ],
     };
 
-    (sut.updateTodos as jest.Mock).mockResolvedValue(expected);
 
-    const actual = await sut.updateTodos(id, item);
+    await todoRepositoryMock.updateTodos.mockReturnValue(expected);
+
+    const actual = await sut.updateTodo(id, item);
     expect(actual).toEqual(expected);
   });
 
-  it('should not allow more than 50 characters to be added as a todo', async () => {
 
+  it('should return an error when the task has more than 50 characters', async () => {
+    const longTask = 'a'.repeat(51);
     const item = {
-      task: 'Need to work and cook and exercise and fix car and ...',
-    };
-    const id = 2;
-
-    const expected = {
-      todos: [
-        {
-          id: 1,
-          task: 'This is the only todo',
-        },
-      ],
+      id: 4,
+      task: longTask,
     };
 
-    (sut.updateTodos as jest.Mock).mockResolvedValue(expected);
-
-    const actual = await sut.addTodo(id, item);
-    expect(actual).toEqual(expected);
+    await expect(sut.addTodo(item)).rejects.toThrow('A task cannot have more than 50 characters');
   });
 
-  it('should not add an empty task in the todo list', async () => {
-    const item = {
-      id: 2,
+
+  it('should return an error when user has entered an empty task', async () => {
+    const items = {
+      id: 3,
       task: '',
     };
 
-    (sut.addTodo as jest.Mock).mockImplementation(() => {
-      throw new Error('You must type in a todo');
-    });
+    await expect(sut.addTodo(items)).rejects.toThrow('You must type in a todo');
+  });
 
-    await expect(async () => {
-      sut.addTodo(item);
-    }).rejects.toThrow('You must type in a todo');
+  it('should return an error when user tried to update with an empty task', async () => {
+    const id = 3;
+
+    const items = {
+      id: 3,
+      task: '',
+    };
+
+    await expect(sut.updateTodo(id, items)).rejects.toThrow('You must have a task');
   });
 });
