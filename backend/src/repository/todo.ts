@@ -10,7 +10,11 @@ export class TodoRepository {
   };
 
   getTodos() {
-    return this.todoList;
+    if (this.todoList) {
+      return this.todoList;
+    } else {
+      throw new Error('Unable to retrieve todolist');
+    }
   };
 
   addTodo(item) {
@@ -18,7 +22,7 @@ export class TodoRepository {
       this.todoList.todos.push(item);
       return this.todoList;
     } else {
-      throw new Error('You must type in a todo');
+      throw new Error('Unable to add to todolist');
     }
   }
 

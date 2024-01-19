@@ -28,7 +28,7 @@ describe('TODO repository', () => {
     };
     (repository.getTodos as jest.Mock).mockResolvedValue(expected);
 
-    const actual = repository.getTodos();
+    const actual = await repository.getTodos();
     expect(actual).toEqual(expected);
   });
 
@@ -53,7 +53,7 @@ describe('TODO repository', () => {
 
     (repository.addTodo as jest.Mock).mockResolvedValue(expected);
 
-    const actual = repository.addTodo(item);
+    const actual = await repository.addTodo(item);
     expect(actual).toEqual(expected);
   });
 
@@ -66,7 +66,7 @@ describe('TODO repository', () => {
 
     (repository.deleteTodos as jest.Mock).mockResolvedValue(expected);
 
-    const actual = repository.deleteTodos(id);
+    const actual = await repository.deleteTodos(id);
     expect(actual).toEqual(expected);
   });
 
@@ -88,12 +88,11 @@ describe('TODO repository', () => {
 
     (repository.updateTodos as jest.Mock).mockResolvedValue(expected);
 
-    const actual = repository.updateTodos(id, item);
+    const actual = await repository.updateTodos(id, item);
     expect(actual).toEqual(expected);
   });
 
-  it('should not persist changes to a non existent element in the todo list', async () => {
-
+  it('should return an error when trying to persist changes to a non existent element in the todo list', async () => {
 
     const item = {
       task: 'This is a non existent todo',
@@ -109,7 +108,7 @@ describe('TODO repository', () => {
     }).rejects.toThrow('Todo with ID 2 does not exist.');
   });
 
-  it('should not delete a non existent element in the todo list', async () => {
+  it('should return an error when trying to delete a non existent element in the todo list', async () => {
     const id = 2;
 
 
@@ -119,21 +118,34 @@ describe('TODO repository', () => {
 
     await expect(async () => {
       repository.deleteTodos(id);
-    }).rejects.toThrow((`Todo with ID 2 cannot be deleted.`));
+    }).rejects.toThrow(`Todo with ID 2 cannot be deleted.`);
   });
 
-  it('should not add an empty task in the todo list', async () => {
-    const item = {
-      id: 2,
-      task: '',
-    };
-
-    (repository.addTodo as jest.Mock).mockImplementation(() => {
-      throw new Error('You must type in a todo');
+  it('should return an error when the user cannot retrieve the todolist', async () => {
+    (repository.getTodos as jest.Mock).mockImplementation(() => {
+      throw new Error('Unable to retrieve todolist');
     });
 
     await expect(async () => {
-      repository.addTodo(item);
-    }).rejects.toThrow('You must type in a todo');
+      repository.getTodos();
+    }).rejects.toThrow('Unable to retrieve todolist');
+  });
+
+  it('should return an error when user cannot add to the todolist', async () => {
+    const items = {
+      todos: [
+        {
+          id: 3,
+          task: 'This todo cannot be added',
+        },
+      ],
+    };
+    (repository.addTodo as jest.Mock).mockImplementation(() => {
+      throw new Error('Unable to add to todolist');
+    });
+
+    await expect(async () => {
+      repository.addTodo(items);
+    }).rejects.toThrow('Unable to add to todolist');
   });
 });
