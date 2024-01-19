@@ -1,0 +1,14 @@
+{
+  "clearMocks": true,
+  "testEnvironment": "node",
+  "maxWorkers": "80%",
+  "collectCoverageFrom": [
+    "src/**"
+  ],
+  "coveragePathIgnorePatterns": [
+    "index.ts"
+  ],
+  "transform": {
+    "^.+\\.tsx?$": "ts-jest"
+  }
+}
