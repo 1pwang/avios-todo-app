@@ -1,12 +1,11 @@
-
+"use strict";
 let todoList = {
-  todos: [
-    {
-      "task": "This is a todo example"
-    }
-  ]
+    todos: [
+        {
+            "task": "This is a todo example"
+        }
+    ]
 };
-
 module.exports = {
-  getTodos: () => Promise.resolve(todoList)
+    getTodos: () => Promise.resolve(todoList)
 };
