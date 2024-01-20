@@ -1,17 +1,21 @@
-const express = require('express');
-const cors = require('cors');
-const repository = require('./repository/todo');
-const todoService = require('./service/todo')(repository);
+import express from 'express';
+import cors from 'cors';
+import { TodoRepository } from './repository/todo';
+import { TodoService } from './service/todo';
 
 const server = () => {
-  const server = express();
-  server.use(express.json());
-  server.use(cors());
+  const app = express();
+  app.use(express.json());
+  app.use(cors());
 
-  server.get('/api/todo', async (req, res) => {
+  const todoRepository = new TodoRepository();
+  const todoService = new TodoService(todoRepository);
+
+  app.get('/api/todo', async (req, res) => {
     res.json(await todoService.getTodos());
   });
 
-  return server;
+  return app;
 };
-module.exports = server;
+
+export default server;
