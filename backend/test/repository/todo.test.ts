@@ -1,4 +1,5 @@
 import * as todoRepository from '../../src/repository/todo';
+import { TaskStatus } from '../../src/enums/task-status';
 
 jest.mock('../../src/repository/todo', () => ({
   TodoRepository: jest.fn().mockImplementation(() => ({
@@ -6,6 +7,7 @@ jest.mock('../../src/repository/todo', () => ({
     addTodo: jest.fn(),
     deleteTodos: jest.fn(),
     updateTodos: jest.fn(),
+    updateTaskStatus: jest.fn()
   })),
 }));
 
@@ -23,6 +25,7 @@ describe('TODO repository', () => {
         {
           id: 1,
           task: 'This is a todo example',
+          status: TaskStatus.Incomplete
         },
       ],
     };
@@ -38,10 +41,12 @@ describe('TODO repository', () => {
         {
           id: 1,
           task: 'This is a todo example',
+          status: TaskStatus.Incomplete
         },
         {
           id: 2,
           task: 'This is another todo example',
+          status: TaskStatus.Completed
         },
       ],
     };
@@ -70,7 +75,7 @@ describe('TODO repository', () => {
     expect(actual).toEqual(expected);
   });
 
-  it('should persist changes to the todo list', async () => {
+  it('should persist changes to a task', async () => {
 
     const item = {
       task: 'This is an updated todo',
@@ -78,12 +83,9 @@ describe('TODO repository', () => {
     const id = 1;
 
     const expected = {
-      todos: [
-        {
-          id: 1,
-          task: 'This is an updated todo',
-        },
-      ],
+      id: 1,
+      task: 'This is an updated todo',
+      status: TaskStatus.Incomplete
     };
 
     (repository.updateTodos as jest.Mock).mockResolvedValue(expected);
@@ -93,29 +95,24 @@ describe('TODO repository', () => {
   });
 
   it('should update the status of a task in the todolist', async () => {
-
-    const status = {
-      status: 'TaskStatus.complete',
+    const taskStatus = {
+      status: TaskStatus.Completed,
     };
     const id = 1;
 
     const expected = {
-      todos: [
-        {
-          id: 1,
-          task: 'This is an updated todo',
-          status: 'TaskStatus.complete',
-        },
-      ],
+      id: 1,
+      task: 'This is an updated todo',
+      status: TaskStatus.Completed,
     };
 
     (repository.updateTaskStatus as jest.Mock).mockResolvedValue(expected);
 
-    const actual = await repository.updateTaskStatus(id, status);
+    const actual = await repository.updateTaskStatus(id, taskStatus.status);
     expect(actual).toEqual(expected);
   });
 
-  it('should return an error when trying to persist changes to a non existent element in the todo list', async () => {
+  it('should return an error when trying to persist changes to a non existent task in the todo list', async () => {
 
     const item = {
       task: 'This is a non existent todo',
@@ -131,7 +128,7 @@ describe('TODO repository', () => {
     }).rejects.toThrow('Todo with ID 2 does not exist.');
   });
 
-  it('should return an error when trying to delete a non existent element in the todo list', async () => {
+  it('should return an error when trying to delete a non existent task in the todo list', async () => {
     const id = 2;
 
 
@@ -172,19 +169,19 @@ describe('TODO repository', () => {
     }).rejects.toThrow('Unable to add to todolist');
   });
 
-  it('should return an error when the task status cannot be updated', async () => {
+  it('should return an error when user cannot add to the todolist', async () => {
     const status = {
-      status: 'TaskStatus.complete',
+      status: TaskStatus.Completed
     };
 
     const id = 1;
 
     (repository.updateTaskStatus as jest.Mock).mockImplementation(() => {
-      throw new Error('Unable to add to todolist');
+      throw new Error(`Unable to update status of task ${id}`);
     });
 
     await expect(async () => {
       repository.updateTaskStatus(id, status);
-    }).rejects.toThrow('Unable to add to todolist');
+    }).rejects.toThrow(`Unable to update status of task ${id}`);
   });
 });

@@ -1,10 +1,13 @@
+import { TaskStatus } from '../enums/task-status';
+
 export class TodoRepository {
 
   todoList = {
     todos: [
       {
         'id': 1,
-        'task': 'This is a todo example'
+        'task': 'This is a todo example',
+        'status': TaskStatus.Incomplete
       }
     ]
   };
@@ -39,9 +42,20 @@ export class TodoRepository {
     const index = this.todoList.todos.findIndex(todo => todo.id === id);
     if (index !== -1) {
       this.todoList.todos[index] = {...this.todoList.todos[index], ...item};
+      return this.todoList.todos[index];
     } else {
       throw new Error(`Todo with ID ${id} does not exist.`);
     }
-    return this.todoList;
   }
+
+  updateTaskStatus(id, status) {
+    const index = this.todoList.todos.findIndex(todo => todo.id === id);
+    if (index !== -1) {
+      this.todoList.todos[index] = {...this.todoList.todos[index], ...status};
+      return this.todoList.todos[index];
+    } else {
+      throw new Error(`Unable to update status of task ${id}`);
+    }
+  }
+  
 }
