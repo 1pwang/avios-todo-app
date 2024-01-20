@@ -1,4 +1,5 @@
 import { TodoRepository } from '../repository/todo';
+import { TaskStatus } from '../enums/task-status';
 
 export class TodoService {
 
@@ -42,12 +43,19 @@ export class TodoService {
     }
   }
 
-
   public async deleteTodo(id: number) {
     try {
       return await this.todoRepository.deleteTodos(id);
     } catch (err) {
       throw new Error('Unable to delete task from todolist');
+    }
+  }
+
+  public async updateTaskStatus(id: number, status: TaskStatus) {
+    try {
+      return await this.todoRepository.updateTaskStatus(id, status);
+    } catch (err) {
+      throw new Error('There is an error in updating status of your task');
     }
   }
 }

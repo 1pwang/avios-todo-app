@@ -95,9 +95,8 @@ describe('TODO repository', () => {
   });
 
   it('should update the status of a task in the todolist', async () => {
-    const taskStatus = {
-      status: TaskStatus.Completed,
-    };
+    const taskStatus = TaskStatus.Completed;
+
     const id = 1;
 
     const expected = {
@@ -108,7 +107,7 @@ describe('TODO repository', () => {
 
     (repository.updateTaskStatus as jest.Mock).mockResolvedValue(expected);
 
-    const actual = await repository.updateTaskStatus(id, taskStatus.status);
+    const actual = await repository.updateTaskStatus(id, taskStatus);
     expect(actual).toEqual(expected);
   });
 
@@ -157,6 +156,7 @@ describe('TODO repository', () => {
         {
           id: 3,
           task: 'This todo cannot be added',
+          status: TaskStatus.Incomplete
         },
       ],
     };
@@ -169,10 +169,9 @@ describe('TODO repository', () => {
     }).rejects.toThrow('Unable to add to todolist');
   });
 
-  it('should return an error when user cannot add to the todolist', async () => {
-    const status = {
-      status: TaskStatus.Completed
-    };
+  it('should return an error when user cannot update the status of the task', async () => {
+    const status = TaskStatus.Completed
+
 
     const id = 1;
 

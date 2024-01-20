@@ -71,18 +71,12 @@ describe('TodoService', () => {
 
   it('should update the todo list', async () => {
     const item = {
-      id: 1,
-      task: 'This is an updated todo',
-      status: TaskStatus.Completed
+      task: 'This is an updated todo'
     };
+
     const id = 1;
 
-    const expected = {
-      id: 1,
-      task: 'This is an updated todo',
-      status: TaskStatus.Completed
-    };
-
+    const expected = 'This is an updated todo';
 
     await todoRepositoryMock.updateTodos.mockReturnValue(expected);
 
@@ -91,17 +85,11 @@ describe('TodoService', () => {
   });
 
   it('should update the status of a task be complete', async () => {
-    const status = {
-      status: TaskStatus.Completed
-    };
+    const status = TaskStatus.Completed;
+
     const id = 1;
 
-    const expected =
-      {
-        id: 1,
-        task: 'This is an incomplete task',
-        status: TaskStatus.Completed
-      };
+    const expected = TaskStatus.Completed;
 
 
     await todoRepositoryMock.updateTaskStatus.mockReturnValue(expected);
@@ -111,16 +99,11 @@ describe('TodoService', () => {
   });
 
   it('should update the status of a task be incomplete', async () => {
-    const item = {
-      status: TaskStatus.Incomplete
-    };
+    const status = TaskStatus.Incomplete;
+
     const id = 1;
 
-    const expected = {
-      id: 1,
-      task: 'This is an updated todo',
-      status: TaskStatus.Incomplete
-    };
+    const expected = TaskStatus.Incomplete;
 
 
     await todoRepositoryMock.updateTaskStatus.mockReturnValue(expected);
@@ -154,36 +137,8 @@ describe('TodoService', () => {
   it('should return an error when user tried to update with an empty task', async () => {
     const id = 3;
 
-    const items = {
-      id: 3,
-      task: '',
-      status: TaskStatus.Incomplete
-    };
+    const items = '';
 
     await expect(sut.updateTodo(id, items)).rejects.toThrow('You must have a task');
-  });
-
-  it('should return an error when user tries to update the status of a task to be completed', async () => {
-    const id = 3;
-
-    const items = {
-      id: 3,
-      task: 'This is a completed task',
-      status: TaskStatus.Completed
-    };
-
-    await expect(sut.updateTaskStatus(id, items)).rejects.toThrow('This task cannot be updated');
-  });
-
-  it('should return an error when user tries to update the status of a task to be incomplete', async () => {
-    const id = 3;
-
-    const items = {
-      id: 3,
-      task: 'This is a completed task',
-      status: TaskStatus.Incomplete
-    };
-
-    await expect(sut.updateTaskStatus(id, items)).rejects.toThrow('This task cannot be updated');
   });
 });

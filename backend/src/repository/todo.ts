@@ -42,7 +42,7 @@ export class TodoRepository {
     const index = this.todoList.todos.findIndex(todo => todo.id === id);
     if (index !== -1) {
       this.todoList.todos[index] = {...this.todoList.todos[index], ...item};
-      return this.todoList.todos[index];
+      return this.todoList.todos[index].task;
     } else {
       throw new Error(`Todo with ID ${id} does not exist.`);
     }
@@ -52,10 +52,10 @@ export class TodoRepository {
     const index = this.todoList.todos.findIndex(todo => todo.id === id);
     if (index !== -1) {
       this.todoList.todos[index] = {...this.todoList.todos[index], ...status};
-      return this.todoList.todos[index];
+      return this.todoList.todos[index].status;
     } else {
       throw new Error(`Unable to update status of task ${id}`);
     }
   }
-  
+
 }
