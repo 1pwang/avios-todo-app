@@ -1,6 +1,7 @@
 import { TodoService } from '../../src/service/todo';
 import { TodoRepository } from '../../src/repository/todo';
 import { mock } from 'jest-mock-extended';
+import { TaskStatus } from '../../src/enums/task-status';
 
 describe('TodoService', () => {
   let sut: TodoService;
@@ -17,6 +18,7 @@ describe('TodoService', () => {
         {
           id: 1,
           task: 'This is a todo example',
+          status: TaskStatus.Completed
         },
       ],
     };
@@ -32,10 +34,12 @@ describe('TodoService', () => {
         {
           id: 1,
           task: 'This is a todo example',
+          status: TaskStatus.Completed
         },
         {
           id: 2,
           task: 'This is another todo example',
+          status: TaskStatus.Incomplete
         },
       ],
     };
@@ -43,6 +47,7 @@ describe('TodoService', () => {
     const item = {
       id: 2,
       task: 'This is another todo example',
+      status: TaskStatus.Incomplete
     };
 
     await todoRepositoryMock.addTodo.mockReturnValue(expected);
@@ -68,16 +73,14 @@ describe('TodoService', () => {
     const item = {
       id: 1,
       task: 'This is an updated todo',
+      status: TaskStatus.Completed
     };
     const id = 1;
 
     const expected = {
-      todos: [
-        {
-          id: 1,
-          task: 'This is an updated todo',
-        }
-      ],
+      id: 1,
+      task: 'This is an updated todo',
+      status: TaskStatus.Completed
     };
 
 
@@ -87,12 +90,51 @@ describe('TodoService', () => {
     expect(actual).toEqual(expected);
   });
 
+  it('should update the status of a task be complete', async () => {
+    const status = {
+      status: TaskStatus.Completed
+    };
+    const id = 1;
+
+    const expected =
+      {
+        id: 1,
+        task: 'This is an incomplete task',
+        status: TaskStatus.Completed
+      };
+
+
+    await todoRepositoryMock.updateTaskStatus.mockReturnValue(expected);
+
+    const actual = await sut.updateTaskStatus(id, status);
+    expect(actual).toEqual(expected);
+  });
+
+  it('should update the status of a task be incomplete', async () => {
+    const item = {
+      status: TaskStatus.Incomplete
+    };
+    const id = 1;
+
+    const expected = {
+      id: 1,
+      task: 'This is an updated todo',
+      status: TaskStatus.Incomplete
+    };
+
+
+    await todoRepositoryMock.updateTaskStatus.mockReturnValue(expected);
+
+    const actual = await sut.updateTaskStatus(id, status);
+    expect(actual).toEqual(expected);
+  });
 
   it('should return an error when the task has more than 50 characters', async () => {
     const longTask = 'a'.repeat(51);
     const item = {
       id: 4,
       task: longTask,
+      status: TaskStatus.Incomplete
     };
 
     await expect(sut.addTodo(item)).rejects.toThrow('A task cannot have more than 50 characters');
@@ -103,6 +145,7 @@ describe('TodoService', () => {
     const items = {
       id: 3,
       task: '',
+      status: TaskStatus.Incomplete
     };
 
     await expect(sut.addTodo(items)).rejects.toThrow('You must type in a todo');
@@ -114,8 +157,33 @@ describe('TodoService', () => {
     const items = {
       id: 3,
       task: '',
+      status: TaskStatus.Incomplete
     };
 
     await expect(sut.updateTodo(id, items)).rejects.toThrow('You must have a task');
+  });
+
+  it('should return an error when user tries to update the status of a task to be completed', async () => {
+    const id = 3;
+
+    const items = {
+      id: 3,
+      task: 'This is a completed task',
+      status: TaskStatus.Completed
+    };
+
+    await expect(sut.updateTaskStatus(id, items)).rejects.toThrow('This task cannot be updated');
+  });
+
+  it('should return an error when user tries to update the status of a task to be incomplete', async () => {
+    const id = 3;
+
+    const items = {
+      id: 3,
+      task: 'This is a completed task',
+      status: TaskStatus.Incomplete
+    };
+
+    await expect(sut.updateTaskStatus(id, items)).rejects.toThrow('This task cannot be updated');
   });
 });
