@@ -3,7 +3,13 @@ import { TaskStatus } from '../enums/task-status';
 export class TodoRepository {
 
   todoList = {
-    todos: []
+    todos: [
+      {
+        id: 1,
+        task: 'This is a todo example',
+        status: TaskStatus.Incomplete as TaskStatus
+      }
+    ]
   };
 
   getTodos() {
@@ -26,12 +32,11 @@ export class TodoRepository {
       };
 
       this.todoList.todos.push(newTask);
-      return this.todoList;
+      return newTask;
     } else {
       throw new Error('Unable to add to todolist');
     }
   }
-
 
   deleteTodos(id: number) {
     if (this.todoList.todos.some(todo => todo.id === id)) {
