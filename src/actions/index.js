@@ -3,7 +3,7 @@ import { FETCH_TODOS } from "./types";
 
 export function fetchTodos() {
   return function(dispatch) {
-    return axios.get("http://localhost:9091/api/todo").then(({ data }) => {
+    return axios.get("http://localhost:9091/api/getTask").then(({ data }) => {
       dispatch(setTodos(data));
     });
   };
