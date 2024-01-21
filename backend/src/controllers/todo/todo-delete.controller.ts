@@ -1,16 +1,16 @@
-import { TodoService } from '../../service/todo';
 import { TodoRepository } from '../../repository/todo';
+import { TodoService } from '../../service/todo';
 
-export class TodoController {
+export class TodoDeleteController {
 
-  async getTodos(req: any, res: any) {
+  async deleteTask(req: any, res: any) {
     try {
+      const id = parseInt(req.params.id);
       const todoRepository = new TodoRepository();
       let todoService = new TodoService(todoRepository);
-      const todos = await todoService.getTodos();
+      const todos = await todoService.deleteTodo(id);
       await res.json(todos);
     } catch (err) {
-      console.error(err);
       res.status(500).json({error: 'Internal server error'});
     }
   }

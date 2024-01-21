@@ -3,13 +3,7 @@ import { TaskStatus } from '../enums/task-status';
 export class TodoRepository {
 
   todoList = {
-    todos: [
-      {
-        'id': 1,
-        'task': 'This is a todo example',
-        'status': TaskStatus.Incomplete as TaskStatus
-      }
-    ]
+    todos: []
   };
 
   getTodos() {
@@ -22,12 +16,22 @@ export class TodoRepository {
 
   addTodo(item: any) {
     if (item !== '') {
-      this.todoList.todos.push(item);
+      const latestTodo = this.todoList.todos[this.todoList.todos.length - 1];
+      const newId = latestTodo ? latestTodo.id + 1 : 1;
+
+      const newTask = {
+        id: newId,
+        task: item.task,
+        status: TaskStatus.Incomplete
+      };
+
+      this.todoList.todos.push(newTask);
       return this.todoList;
     } else {
       throw new Error('Unable to add to todolist');
     }
   }
+
 
   deleteTodos(id: number) {
     if (this.todoList.todos.some(todo => todo.id === id)) {

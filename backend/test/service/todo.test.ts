@@ -29,20 +29,12 @@ describe('TodoService', () => {
   });
 
   it('should add to the todo list', async () => {
-    const expected = {
-      todos: [
-        {
-          id: 1,
-          task: 'This is a todo example',
-          status: TaskStatus.Completed
-        },
-        {
-          id: 2,
-          task: 'This is another todo example',
-          status: TaskStatus.Incomplete
-        },
-      ],
-    };
+    const expected =
+      {
+        id: 2,
+        task: 'This is another todo example',
+        status: TaskStatus.Incomplete
+      };
 
     const item = {
       id: 2,
@@ -73,7 +65,6 @@ describe('TodoService', () => {
     const item = {
       task: 'This is an updated todo'
     };
-
     const id = 1;
 
     const expected = 'This is an updated todo';
