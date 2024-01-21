@@ -77,9 +77,8 @@ describe('TODO repository', () => {
 
   it('should persist changes to a task', async () => {
 
-    const item = {
-      task: 'This is an updated todo',
-    };
+    const item = 'This is an updated todo';
+
     const id = 1;
 
     const expected = {
@@ -113,9 +112,8 @@ describe('TODO repository', () => {
 
   it('should return an error when trying to persist changes to a non existent task in the todo list', async () => {
 
-    const item = {
-      task: 'This is a non existent todo',
-    };
+    const item = 'This is a non existent todo';
+
     const id = 2;
 
     (repository.updateTodos as jest.Mock).mockImplementation(() => {
@@ -170,7 +168,7 @@ describe('TODO repository', () => {
   });
 
   it('should return an error when user cannot update the status of the task', async () => {
-    const status = TaskStatus.Completed
+    const status = TaskStatus.Completed;
 
 
     const id = 1;

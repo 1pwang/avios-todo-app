@@ -7,7 +7,7 @@ export class TodoRepository {
       {
         'id': 1,
         'task': 'This is a todo example',
-        'status': TaskStatus.Incomplete
+        'status': TaskStatus.Incomplete as TaskStatus
       }
     ]
   };
@@ -20,7 +20,7 @@ export class TodoRepository {
     }
   };
 
-  addTodo(item) {
+  addTodo(item: any) {
     if (item !== '') {
       this.todoList.todos.push(item);
       return this.todoList;
@@ -29,8 +29,8 @@ export class TodoRepository {
     }
   }
 
-  deleteTodos(id) {
-    if (this.todoList.todos === id) {
+  deleteTodos(id: number) {
+    if (this.todoList.todos.some(todo => todo.id === id)) {
       this.todoList.todos = this.todoList.todos.filter(todo => todo.id !== id);
       return this.todoList;
     } else {
@@ -38,20 +38,20 @@ export class TodoRepository {
     }
   }
 
-  updateTodos(id, item) {
+  updateTodos(id: number, item: string) {
     const index = this.todoList.todos.findIndex(todo => todo.id === id);
     if (index !== -1) {
-      this.todoList.todos[index] = {...this.todoList.todos[index], ...item};
+      this.todoList.todos[index].task = item;
       return this.todoList.todos[index].task;
     } else {
       throw new Error(`Todo with ID ${id} does not exist.`);
     }
   }
 
-  updateTaskStatus(id, status) {
+  updateTaskStatus(id: number, status: TaskStatus) {
     const index = this.todoList.todos.findIndex(todo => todo.id === id);
     if (index !== -1) {
-      this.todoList.todos[index] = {...this.todoList.todos[index], ...status};
+      this.todoList.todos[index].status = status;
       return this.todoList.todos[index].status;
     } else {
       throw new Error(`Unable to update status of task ${id}`);
