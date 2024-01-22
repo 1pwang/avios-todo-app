@@ -1,11 +1,12 @@
 import { TodoRepository } from '../../repository/todo';
 import { TodoService } from '../../service/todo';
+import {TaskDto} from "../../dto-types/task-dto";
 
 export class TodoCreateController {
 
   async addTask(req: any, res: any) {
 
-    const {task} = req.body;
+    const {task}: TaskDto = req.body;
 
     try {
       const todoRepository = new TodoRepository();

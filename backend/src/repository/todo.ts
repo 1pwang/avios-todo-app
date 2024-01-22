@@ -20,8 +20,8 @@ export class TodoRepository {
     }
   };
 
-  addTodo(item: any) {
-    if (item !== '') {
+  addTodo(item: { task: string }) {
+    if(item){
       const latestTodo = this.todoList.todos[this.todoList.todos.length - 1];
       const newId = latestTodo ? latestTodo.id + 1 : 1;
 

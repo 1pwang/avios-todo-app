@@ -2,6 +2,7 @@ import { TodoService } from '../../src/service/todo';
 import { TodoRepository } from '../../src/repository/todo';
 import { mock } from 'jest-mock-extended';
 import { TaskStatus } from '../../src/enums/task-status';
+import {TaskDto} from "../../src/dto-types/task-dto";
 
 describe('TodoService', () => {
   let sut: TodoService;
@@ -29,7 +30,7 @@ describe('TodoService', () => {
   });
 
   it('should add to the todo list', async () => {
-    const expected =
+    const expected: TaskDto =
       {
         id: 2,
         task: 'This is another todo example',
