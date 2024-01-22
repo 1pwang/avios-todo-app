@@ -1,5 +1,6 @@
 import * as todoRepository from '../../src/repository/todo';
 import { TaskStatus } from '../../src/enums/task-status';
+import {TaskDto} from "../../src/dto-types/task-dto";
 
 jest.mock('../../src/repository/todo', () => ({
   TodoRepository: jest.fn().mockImplementation(() => ({
@@ -51,9 +52,10 @@ describe('TODO repository', () => {
       ],
     };
 
-    const item = {
+    const item : TaskDto = {
       id: 2,
       task: 'This is another todo example',
+      status: TaskStatus.Incomplete
     };
 
     (repository.addTodo as jest.Mock).mockResolvedValue(expected);
@@ -149,14 +151,10 @@ describe('TODO repository', () => {
   });
 
   it('should return an error when user cannot add to the todolist', async () => {
-    const items = {
-      todos: [
-        {
+    const items: TaskDto = {
           id: 3,
           task: 'This todo cannot be added',
           status: TaskStatus.Incomplete
-        },
-      ],
     };
     (repository.addTodo as jest.Mock).mockImplementation(() => {
       throw new Error('Unable to add to todolist');

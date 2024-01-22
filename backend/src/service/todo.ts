@@ -1,5 +1,6 @@
 import { TodoRepository } from '../repository/todo';
 import { TaskStatus } from '../enums/task-status';
+import {TaskDto} from "../dto-types/task-dto";
 
 export class TodoService {
 
@@ -15,7 +16,7 @@ export class TodoService {
     }
   }
 
-  public async addTodo(item: any) {
+  public async addTodo(item: { task: string }) {
     if (!item || !item.task) {
       throw new Error('You must type in a todo');
     }
